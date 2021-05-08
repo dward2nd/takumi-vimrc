@@ -31,7 +31,7 @@ filetype indent on
 " ====== Indentation ======
 
 " Automatically indent when pressing enter .
-"set autoindent
+set autoindent
 
 " Indent based on the syntax currently editing.
 set smartindent
@@ -129,16 +129,31 @@ set backspace=indent,eol,start
 " type many lines of comments.
 set formatoptions+=cor
 
-" Automatically enclose the bracelets.
-inoremap        {  {}<Left>
-inoremap <expr> }  strpart(getline('.'), col('.')-1, 1) == "}" ? "\<Right>" : "}"
-inoremap        (  ()<Left>
-inoremap <expr> )  strpart(getline('.'), col('.')-1, 1) == ")" ? "\<Right>" : ")"
-inoremap        [  []<Left>
-inoremap <expr> ]  strpart(getline('.'), col('.')-1, 1) == "]" ? "\<Right>" : "]"
-inoremap <expr> "  strpart(getline('.'), col('.')-1, 1) == "\"" ? "\<Right>" : "\"\"\<Left>"
-inoremap <expr> '  strpart(getline('.'), col('.')-1, 1) == "\'" ? "\<Right>" : "\'\'\<Left>"
-inoremap <expr> `  strpart(getline('.'), col('.')-1, 1) == "\`" ? "\<Right>" : "``\<Left>"
+" Automatically enclose the bracelets, brackets, parentheses, quotes.
+inoremap        {         {}<Left>
+inoremap        {<CR>     {<CR>}<Esc>O
+inoremap <expr> }         strpart(getline('.'), col('.')-1, 1) == "}" ? "\<Right>" : "}"
+inoremap        (         ()<Left>
+inoremap        (<CR>     (<CR>)<Esc>O
+inoremap <expr> )         strpart(getline('.'), col('.')-1, 1) == ")" ? "\<Right>" : ")"
+inoremap        [         []<Left>
+inoremap        [<CR>     [<CR>]<Esc>O
+inoremap <expr> ]         strpart(getline('.'), col('.')-1, 1) == "]" ? "\<Right>" : "]"
+inoremap <expr> "         strpart(getline('.'), col('.')-1, 1) == "\"" ? "\<Right>" : "\"\"\<Left>"
+inoremap        "<CR>     "<CR>"<Esc>O
+inoremap <expr> """       strpart(getline('.'), col('.')-1, 3) == "\"\"\"" ? "\<Right>\<Right>\<Right>" : "\"\"\"\"\"\"\<Left>\<Left>\<Left>"
+inoremap        """<CR>   """<CR>"""<Esc>O
+inoremap <expr> '         strpart(getline('.'), col('.')-1, 1) == "\'" ? "\<Right>" : "\'\'\<Left>"
+inoremap        '<CR>     '<CR>'<Esc>O
+inoremap <expr> '''       strpart(getline('.'), col('.')-1, 3) == "\'\'\'" ? "\<Right>\<Right>\<Right>" : "\'\'\'\'\'\'\<Left>\<Left>\<Left>"
+inoremap        '''<CR>   '''<CR>'''<Esc>O
+inoremap <expr> `         strpart(getline('.'), col('.')-1, 1) == "`" ? "\<Right>" : "``\<Left>"
+inoremap        `<CR>     `<CR>`<Esc>O
+inoremap <expr> ```       strpart(getline('.'), col('.')-1, 3) == "```" ? "\<Right>\<Right>\<Right>" : "``````\<Left>\<Left>\<Left>"
+inoremap        ```<CR>   ```<CR>```<Esc>O
+inoremap /*               /**/<Left><Left>
+inoremap /*<Space>        /*<Space><Space>*/<Left><Left><Left>
+inoremap /*<CR>           /*<CR>*/<Esc>O
 
 " ====== History & Backup ======
 
