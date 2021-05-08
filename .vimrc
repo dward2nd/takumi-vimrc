@@ -7,7 +7,8 @@ set nocompatible
 "set number
 
 " Show line numbers relatively to the current cursor
-set relativenumber
+"where the current line would show the absolute line number instead.
+set number relativenumber
 
 " Syntax highlighting
 syntax on
@@ -30,7 +31,7 @@ filetype indent on
 " ====== Indentation ======
 
 " Automatically indent when pressing enter .
-set autoindent
+"set autoindent
 
 " Indent based on the syntax currently editing.
 set smartindent
@@ -50,6 +51,7 @@ set expandtab
 " How many space each tab will turn into
 set softtabstop=2
 
+" 
 " ====== Appearance ======
 
 " Show a cursor line on a line I'm typing in.
@@ -128,10 +130,14 @@ set backspace=indent,eol,start
 set formatoptions+=cor
 
 " Automatically enclose the bracelets.
-inoremap {      {}<Left>
-inoremap {<CR>  {<CR>}<Esc>O
-inoremap {{     {
-inoremap {}     {}
+inoremap        {  {}<Left>
+inoremap <expr> }  strpart(getline('.'), col('.')-1, 1) == "}" ? "\<Right>" : "}"
+inoremap        (  ()<Left>
+inoremap <expr> )  strpart(getline('.'), col('.')-1, 1) == ")" ? "\<Right>" : ")"
+inoremap        [  []<Left>
+inoremap <expr> ]  strpart(getline('.'), col('.')-1, 1) == "]" ? "\<Right>" : "]"
+inoremap <expr> "  strpart(getline('.'), col('.')-1, 1) == "\"" ? "\<Right>" : "\"\"\<Left>"
+inoremap <expr> '  strpart(getline('.'), col('.')-1, 1) == "\'" ? "\<Right>" : "\'\'\<Left>"
 
 " ====== History & Backup ======
 
@@ -145,7 +151,7 @@ set autochdir
 
 " Fuzzy file search in command line
 " fzf Installed with Homebrew
-set rtp+=/usr/local/opt/fzf
+"set rtp+=/usr/local/opt/fzf
 
 " Warning if my code is longer than 80 characters.
 set colorcolumn=80
@@ -159,6 +165,7 @@ imap <C-v> <C-r><C-o>+
 " My preferred key-mapping.
 nnoremap <C-h> :bp<CR>
 nnoremap <C-l> :bn<CR>
+inoremap jk <Esc>    
 
 " Ensure that the color works properly.
 if !has('gui_running')
@@ -176,20 +183,29 @@ call plug#begin('~/.vim/plugged')
 "Plug 'itchyny/lightline.vim'
 
 " vim-gitbranch, showing git branch on the status bar
-"Plug 'itchyny/vim-gitbranch'
+Plug 'itchyny/vim-gitbranch'
 
 " vim-airline, the better and better status bar for vim.
 Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+"Plug 'vim-airline/vim-airline-themes'
+
+" installing xcode's default theme
+"Plug 'arzg/vim-colors-xcode'
+
+" install dracula theme
+Plug 'dracula/vim', { 'as': 'dracula' }
 
 " Syntax highlighting-related plugins
 "Plug 'https://github.com/vim-ruby/vim-ruby'
-"Plug 'https://github.com/leafgarland/typescript-vim'
-"Plug 'https://github.com/pangloss/vim-javascript'
-"Plug 'https://github.com/MaxMEllon/vim-jsx-pretty'
+Plug 'https://github.com/leafgarland/typescript-vim'
+Plug 'https://github.com/pangloss/vim-javascript'
+Plug 'https://github.com/MaxMEllon/vim-jsx-pretty'
 "Plug 'https://github.com/rust-lang/rust.vim'
-"Plug 'elzr/vim-json'
+Plug 'elzr/vim-json'
 Plug 'sheerun/vim-polyglot'
+
+" installing signify, where the file changes in git repo
+Plug 'mhinz/vim-signify'
 
 " Make git-compatible
 Plug 'tpope/vim-fugitive'
@@ -202,7 +218,21 @@ Plug 'scrooloose/nerdtree'
 "Plug 'junegunn/fzf.vim'
 
 " Installing one dark theme.
-Plug 'joshdick/onedark.vim'
+"Plug 'joshdick/onedark.vim'
+
+" Installing Colorizer, the color code highlighting.
+Plug 'chrisbra/Colorizer'
+
+" Installing Plugin for Discord presence
+"Plug 'vbe0201/vimdiscord'
+"Plug 'aurieh/discord.nvim', { 'do': ':UpdateRemotePlugins'}
+
+" Enable `emmet`
+Plug 'mattn/emmet-vim'
+
+" Discord Rich Presence plugin
+"Plug 'anned20/vimsence'
+Plug 'hugolgst/vimsence'
 
 " When finishing the plugin lists, run this line too.
 call plug#end()
@@ -211,7 +241,6 @@ call plug#end()
 
 " Lightline
 let g:lightline = {
-      \ 'colorscheme': 'OldHope',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
@@ -235,20 +264,46 @@ let g:lightline = {
 " Enable the tab bar.
 let g:airline#extensions#tabline#enabled = 1
 
+" Show the tab number on the right of the tabs name.
+let g:airline#extensions#tabline#show_tab_count = 1
+
 " Enable powerline for the airline plugin
 let g:airline_powerline_fonts = 1
 
 " Set the theme to one dark
-let g:onedark_termcolors = 256
-let g:onedark_terminal_italics = 1
-let g:airline_theme='onedark'
-colorscheme onedark
+"let g:onedark_termcolors = 256
+"let g:onedark_terminal_italics = 1
+"let g:airline_theme='onedark'
+"colorscheme onedark
+
+" Set the theme to Xcode dark theme
+"let g:xcodedark_dim_punctuation=0
+"let g:xcodedark_emph_funcs=1
+"let g:xcodedark_emph_idents=1
+"let g:xcodedark_match_paren_style=1
+"let g:airline_theme='xcodedark'
+"colorscheme xcodedark
+
+" Set the theme to Xcode light theme
+"let g:xcodelight_dim_punctuation=0
+"let g:xcodelight_emph_funcs=1
+"let g:xcodelight_emph_idents=1
+"let g:xcodelight_match_paren_style=1
+"let g:airline_theme='xcodelight'
+"colorscheme xcodelight
+
+" Set the theme to Dracula
+let g:airline_theme='dracula'
+colorscheme dracula
+
+" Make signify better for async update
+set updatetime=100
 
 " Enable Nerdtree
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | wincmd w | endif
 
 " Set the Nerdtree to automatically close when only Nerdtree's tab left in the
 " buffer
@@ -260,3 +315,26 @@ let NERDTreeDirArrows = 1
 
 " Set the default size of nerdtree
 let NERDTreeWinSize = 26
+
+" Enable emmet only for HTML/CSS file
+let g:user_emmet_install_global = 1
+"autocmd FileType html,css,js,ts EmmetInstall
+
+" Set the default color of menu to the less saturated color.
+"hi Directory guifg=#C77F55 ctermfg=yellow
+
+" Enable color code highlighting.
+let g:colorizer_auto_color = 1
+
+" Enable highlighting color name.
+let g:colorizer_colornames = 1
+
+" Vimsence setting (Discord Rich Presence)
+let g:vimsence_client_id = '439476230543245312'
+let g:vimsence_small_text = 'The best IDE'
+let g:vimsence_small_image = 'vim'
+let g:vimsence_editing_details = 'Editing: {}'
+let g:vimsence_editing_state = 'Working on: {}'
+let g:vimsence_file_explorer_text = 'In NERDTree'
+let g:vimsence_file_explorer_details = 'Looking for files'
+let g:vimsence_custom_icons = {'filetype': 'iconname'}
